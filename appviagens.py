@@ -4,11 +4,11 @@ import requests
 
 
 #serve para verifcar se a atração que a pessoa deseja esta contida na lista de categorias que foi dada pelos professores
-def obterAtrações():
-    atraçõesExistentes = []
-    with open("categories.txt", "r") as atrações:
-        for linhas in atrações.readlines():
-            atraçõesExistentes.append(linhas)
+# def obterAtrações():
+#     atraçõesExistentes = []
+#     with open("categories.txt", "r") as atrações:
+#         for linhas in atrações.readlines():
+#             atraçõesExistentes.append(linhas)
             
 
 
@@ -34,9 +34,9 @@ print (a["type"])
 #     api_key = file.read()
 # api_key = api_key.strip()
 
-def main():
+# def main():
 
-    latitude = float(input("Localização (latitude): "))
-    longitude = float(input("Localização (longitude): "))
-    raio = float(input("Distância que pode viajar (km): "))
-    atração = str(input("Tipo de atração que deseja: "))
+#     latitude = float(input("Localização (latitude): "))
+#     longitude = float(input("Localização (longitude): "))
+#     raio = float(input("Distância que pode viajar (km): "))
+#     atração = str(input("Tipo de atração que deseja: "))
