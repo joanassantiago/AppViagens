@@ -1,6 +1,14 @@
 #Grupo: P12G01
 import requests
 
+#   fazer a lista das categorias mais bonita e fazer uma tabela para o output
+#   o utilizador tem de poder meter vários tipos de atração
+
+
+
+
+
+
 #serve para verifcar se a atração que a pessoa deseja esta contida na lista de categorias que foi dada pelos professores
 def obterAtrações():
     atraçõesExistentes = []
@@ -29,37 +37,49 @@ def printList(lista):
     for x in lista:
         print(x)
 
-def limpar_web_response(webResponse):
-    countries = []
-    name = []
-    postcode = []
+def print_cleanWebResponse(webResponse):
+   
+    locations_found = 0
+
+    #Fazer uma tabela com os resultados
+
     clean_webResponse = webResponse["features"]
     for feature in clean_webResponse:
-        countries.append(feature["properties"]["country"])
-        name.append(feature["properties"]["name"])
-        postcode.append(feature["properties"]["postcode"])                                         
-    print(webResponse)
-    # print (clean_webResponse)
-    # print (clean_webResponse["type"])
-
-
+        if "name" in feature["properties"]:
+            # O adress já inclui o nome, rua , cidade, país e código postal
+            adress = feature["properties"]["formatted"]
+            lat = feature["properties"]["lat"]
+            lon = feature["properties"]["lon"]
+            if "distance" in feature["properties"]:
+                distance = feature["properties"]["distance"]
+            else:
+                distance = "0"
+            print (adress,"|", lat,",",lon ,"|", distance,("m"))
+            locations_found += 1
+    print ("\nForam encontradas", locations_found, "atrações.")
+    
 
 
 def main():
     
-    latitude = float(input("Localização (latitude): "))
-    longitude = float(input("Localização (longitude): "))
-    raio = float(input("Distância que pode viajar (km): "))
+    #latitude = float(input("Localização (latitude): "))
+    # longitude = float(input("Localização (longitude): "))
+    # raio = float(input("Distância que pode viajar (km): "))
     
     # Forum aveiro (testes)
     # latitude = 40.64119
     # longitude = -8.65141
     # raio = 1.0
+
+    #Coordenadas do stor
+    latitude = 40.5
+    longitude = -8.5
+    raio = 5005
     
     print("Categorias de atrações disponíveis: \n")
     printList(mainCategories())
     while True:
-        cat = str(input("Escolha as categorias das atrações que deseja visitar:"))
+        cat = str(input("Escolha as categorias das atrações que deseja visitar: "))
         if cat not in mainCategories():
             print("Escolha categorias válidas!")
             continue
@@ -83,7 +103,7 @@ def main():
     #Resposta do servidor
     response = requests.get(url)
     webResponse = response.json()
-    limpar_web_response(webResponse)
+    print_cleanWebResponse(webResponse)
     # with open("API_key.txt") as file:
     #     api_key = file.read()
     # api_key = api_key.strip()
