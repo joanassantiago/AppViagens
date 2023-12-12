@@ -1,9 +1,13 @@
 #Grupo: P12G01
 import requests
 
+#   To do:
 #   fazer a lista das categorias mais bonita e fazer uma tabela para o output
 #   o utilizador tem de poder meter vários tipos de atração
-
+#   outras informações que possamos vir a considerar importantes 
+#   distancia media, ordenação por distância maior ou menor, mostrar os mais perto e mais longe, (mais ideias)
+#
+#
 
 
 
@@ -38,12 +42,10 @@ def printList(lista):
         print(x)
 
 def print_cleanWebResponse(webResponse):
-   
+    
     locations_found = 0
-
-    #Fazer uma tabela com os resultados
-
     clean_webResponse = webResponse["features"]
+    
     for feature in clean_webResponse:
         if "name" in feature["properties"]:
             # O adress já inclui o nome, rua , cidade, país e código postal
@@ -57,14 +59,16 @@ def print_cleanWebResponse(webResponse):
             print (adress,"|", lat,",",lon ,"|", distance,("m"))
             locations_found += 1
     print ("\nForam encontradas", locations_found, "atrações.")
+
+    #print(clean_webResponse)
     
 
 
 def main():
     
-    #latitude = float(input("Localização (latitude): "))
-    # longitude = float(input("Localização (longitude): "))
-    # raio = float(input("Distância que pode viajar (km): "))
+    latitude = float(input("Localização (latitude): "))
+    longitude = float(input("Localização (longitude): "))
+    raio = float(input("Distância que pode viajar (km): "))
     
     # Forum aveiro (testes)
     # latitude = 40.64119
@@ -72,9 +76,9 @@ def main():
     # raio = 1.0
 
     #Coordenadas do stor
-    latitude = 40.5
-    longitude = -8.5
-    raio = 5005
+    # latitude = 40.5
+    # longitude = -8.5
+    # raio = 5005
     
     print("Categorias de atrações disponíveis: \n")
     printList(mainCategories())
