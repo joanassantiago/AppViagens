@@ -17,7 +17,7 @@ def mainCategories():
             mainCategories.append(x)
     return mainCategories
 
-#função que devolve apenas as categorias secundárias de uma categoria principal
+# função que devolve apenas as categorias secundárias de uma categoria principal
 # def subCategories(cat):
 #     subCategories = []
 #     for x in obterAtrações():
@@ -29,17 +29,37 @@ def printList(lista):
     for x in lista:
         print(x)
 
+def limpar_web_response(webResponse):
+    countries = []
+    name = []
+    postcode = []
+    clean_webResponse = webResponse["features"]
+    for feature in clean_webResponse:
+        countries.append(feature["properties"]["country"])
+        name.append(feature["properties"]["name"])
+        postcode.append(feature["properties"]["postcode"])                                         
+    print(webResponse)
+    # print (clean_webResponse)
+    # print (clean_webResponse["type"])
+
+
+
+
 def main():
-    '''
+    
     latitude = float(input("Localização (latitude): "))
     longitude = float(input("Localização (longitude): "))
     raio = float(input("Distância que pode viajar (km): "))
-    '''
     
-    print("Categorias disponíveis: \n")
+    # Forum aveiro (testes)
+    # latitude = 40.64119
+    # longitude = -8.65141
+    # raio = 1.0
+    
+    print("Categorias de atrações disponíveis: \n")
     printList(mainCategories())
     while True:
-        cat = str(input("Escolha as categorias que deseja:"))
+        cat = str(input("Escolha as categorias das atrações que deseja visitar:"))
         if cat not in mainCategories():
             print("Escolha categorias válidas!")
             continue
@@ -56,24 +76,14 @@ def main():
     #     print("Subcategorias disponíveis: \n")
     #     printList(subCategories(cat))
 
-    #Forum aveiro (testes)
-    latitude = 40.641193
-    longitude = -8.651418
-    raio = 0.01
-    cat = "commercial"
-
     #Criação do Url para o geoapify
     url = "https://api.geoapify.com/v2/places?"
     url += "categories=" + cat + "&filter=circle:" + str(longitude) + "," + str(latitude) + "," + str(raio) + "&bias=proximity:" + str(longitude) + "," + str(latitude) 
     url += "&apiKey=" + "34e316823d0044c4b9725dcd1af10809"
-
+    #Resposta do servidor
     response = requests.get(url)
-    print(response.status_code)
-
-    #trocar variavel
-    a = response.json()
-    print (a)
-    print (a["type"])
+    webResponse = response.json()
+    limpar_web_response(webResponse)
     # with open("API_key.txt") as file:
     #     api_key = file.read()
     # api_key = api_key.strip()
