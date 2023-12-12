@@ -66,9 +66,9 @@ def print_cleanWebResponse(webResponse):
 
 def main():
     
-    latitude = float(input("Localização (latitude): "))
-    longitude = float(input("Localização (longitude): "))
-    raio = float(input("Distância que pode viajar (km): "))
+    # latitude = float(input("Localização (latitude): "))
+    # longitude = float(input("Localização (longitude): "))
+    # raio = float(input("Distância que pode viajar (km): "))
     
     # Forum aveiro (testes)
     # latitude = 40.64119
@@ -76,9 +76,9 @@ def main():
     # raio = 1.0
 
     #Coordenadas do stor
-    # latitude = 40.5
-    # longitude = -8.5
-    # raio = 5005
+    latitude = 40.5
+    longitude = -8.5
+    raio = 5005
     
     print("Categorias de atrações disponíveis: \n")
     printList(mainCategories())
