@@ -6,7 +6,7 @@ import requests
 #   o utilizador tem de poder meter vários tipos de atração
 #   outras informações que possamos vir a considerar importantes 
 #   distancia media, ordenação por distância maior ou menor, mostrar os mais perto e mais longe, (mais ideias)
-#
+#   verificar se o que a pessoa esta certo, tipo se as coordenadas que inseriu são um numero
 #
 
 
