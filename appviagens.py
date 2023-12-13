@@ -1,9 +1,9 @@
 #Grupo: P12G01
 import requests
 
+
 #   To do:
 #   fazer a lista das categorias mais bonita e fazer uma tabela para o output
-#   o utilizador tem de poder meter vários tipos de atração
 #   outras informações que possamos vir a considerar importantes 
 #   distancia media, ordenação por distância maior ou menor, mostrar os mais perto e mais longe, (mais ideias)
 #   verificar se o que a pessoa esta certo, tipo se as coordenadas que inseriu são um numero
@@ -45,22 +45,28 @@ def print_cleanWebResponse(webResponse):
     
     locations_found = 0
     clean_webResponse = webResponse["features"]
-    
+    print("Aqui estão as atrações encontradas: \n")
+
     for feature in clean_webResponse:
-        if "name" in feature["properties"]:
-            # O adress já inclui o nome, rua , cidade, país e código postal
-            adress = feature["properties"]["formatted"]
+        if "name" in feature["properties"] and "country" in feature["properties"]:
+            name = feature["properties"]["name"]
+            country = feature["properties"]["country"]
+            district = feature["properties"]["county"]
+            city = feature["properties"]["city"]
+            street = feature["properties"]["street"]
+            postcode = feature["properties"]["postcode"]
             lat = feature["properties"]["lat"]
             lon = feature["properties"]["lon"]
             if "distance" in feature["properties"]:
                 distance = feature["properties"]["distance"]
             else:
                 distance = "0"
-            print (adress,"|", lat,",",lon ,"|", distance,("m"))
+            
+            print (name,"|",country,"|",district,"|",city,"|",street,"|",postcode,"|", lat,",",lon ,"|", distance,("m"))
             locations_found += 1
     print ("\nForam encontradas", locations_found, "atrações.")
 
-    #print(clean_webResponse)
+    # print(clean_webResponse)
     
 
 
@@ -68,7 +74,7 @@ def main():
     
     # latitude = float(input("Localização (latitude): "))
     # longitude = float(input("Localização (longitude): "))
-    # raio = float(input("Distância que pode viajar (km): "))
+    # raio = float(input("Distância que pode viajar (km): ")) * 1000
     
     # Forum aveiro (testes)
     # latitude = 40.64119
@@ -78,32 +84,34 @@ def main():
     #Coordenadas do stor
     latitude = 40.5
     longitude = -8.5
-    raio = 5005
+    raio = 5 * 1000
     
     print("Categorias de atrações disponíveis: \n")
     printList(mainCategories())
+    categorias = []
+    listaCategorias	= ""
     while True:
-        cat = str(input("Escolha as categorias das atrações que deseja visitar: "))
-        if cat not in mainCategories():
+        cat = str(input("Escolha as categorias das atrações que deseja visitar. Introduza uma de cada vez e quando terminar colocar \"end\": " ))
+        if cat.lower() == "end":
+            break
+        elif cat.lower() not in mainCategories():
             print("Escolha categorias válidas!")
             continue
         else:
-            break
-    
-    # while True:
-    #     choice = str(input("Deseja escolher uma subcategoria? (y/n)"))
-    #     if choice != "y" and choice != "n":
-    #         print("ERRO: Insere (y/n)!")
-    #     else:
-    #         break
-    # if choice == "y":
-    #     print("Subcategorias disponíveis: \n")
-    #     printList(subCategories(cat))
+            categorias.append(cat)
+            continue
+    for categoria in categorias:
+        if categorias.index(categoria) == 0: listaCategorias += categoria
+        else: listaCategorias += "," + categoria
+
+    # Para testes
+    # print(listaCategorias)
 
     #Criação do Url para o geoapify
     url = "https://api.geoapify.com/v2/places?"
-    url += "categories=" + cat + "&filter=circle:" + str(longitude) + "," + str(latitude) + "," + str(raio) + "&bias=proximity:" + str(longitude) + "," + str(latitude) 
-    url += "&apiKey=" + "34e316823d0044c4b9725dcd1af10809"
+    url += "categories=" + listaCategorias + "&filter=circle:" + str(longitude) + "," + str(latitude) + "," + str(raio) + "&bias=proximity:" + str(longitude) + "," + str(latitude) 
+    url += "&limit=50" + "&apiKey=" + "34e316823d0044c4b9725dcd1af10809"
+    # print(url)
     #Resposta do servidor
     response = requests.get(url)
     webResponse = response.json()
