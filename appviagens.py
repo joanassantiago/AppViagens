@@ -39,7 +39,10 @@ def mainCategories():
 
 def printList(lista):
     for x in lista:
-        print(x)
+        print("\t"+u"\u2192"+" "+x)
+
+    # print(f"{len(lista): >50}")
+    # print("".format())
 
 def print_cleanWebResponse(webResponse):
     
@@ -48,22 +51,25 @@ def print_cleanWebResponse(webResponse):
     print("Aqui estão as atrações encontradas: \n")
 
     for feature in clean_webResponse:
-        if "name" in feature["properties"] and "country" in feature["properties"]:
-            name = feature["properties"]["name"]
-            country = feature["properties"]["country"]
-            district = feature["properties"]["county"]
-            city = feature["properties"]["city"]
-            street = feature["properties"]["street"]
-            postcode = feature["properties"]["postcode"]
-            lat = feature["properties"]["lat"]
-            lon = feature["properties"]["lon"]
-            if "distance" in feature["properties"]:
-                distance = feature["properties"]["distance"]
-            else:
-                distance = "0"
+        properties = feature["properties"]
+        if "name" in properties and "country" in properties:
+            name = properties["name"]
+            country = properties["country"]
+            district = properties["county"]
+            city = properties["city"]
+            street = properties["street"]
+            postcode = properties["postcode"]
+            lat = properties["lat"]
+            lon = properties["lon"]
+            
+            distance = "0"
+            if "distance" in properties:
+                distance = properties["distance"]
             
             print (name,"|",country,"|",district,"|",city,"|",street,"|",postcode,"|", lat,",",lon ,"|", distance,("m"))
+
             locations_found += 1
+
     print ("\nForam encontradas", locations_found, "atrações.")
 
     # print(clean_webResponse)
@@ -86,20 +92,26 @@ def main():
     longitude = -8.5
     raio = 5 * 1000
     
-    print("Categorias de atrações disponíveis: \n")
+    print("Categorias de atrações disponíveis:")
     printList(mainCategories())
     categorias = []
     listaCategorias	= ""
+    print("\nEscolha as categorias das atrações que deseja visitar. Introduza uma de cada vez e quando terminar colocar \"end\":")
     while True:
-        cat = str(input("Escolha as categorias das atrações que deseja visitar. Introduza uma de cada vez e quando terminar colocar \"end\": " ))
+        cat = str(input("\t> " ))
         if cat.lower() == "end":
             break
         elif cat.lower() not in mainCategories():
-            print("Escolha categorias válidas!")
+            print("\t\t!! Escolha categorias válidas !!")
             continue
         else:
             categorias.append(cat)
             continue
+
+    if len(categorias) == 0:
+        print("\nERRO")
+        return
+
     for categoria in categorias:
         if categorias.index(categoria) == 0: listaCategorias += categoria
         else: listaCategorias += "," + categoria
@@ -110,7 +122,7 @@ def main():
     #Criação do Url para o geoapify
     url = "https://api.geoapify.com/v2/places?"
     url += "categories=" + listaCategorias + "&filter=circle:" + str(longitude) + "," + str(latitude) + "," + str(raio) + "&bias=proximity:" + str(longitude) + "," + str(latitude) 
-    url += "&limit=50" + "&apiKey=" + "34e316823d0044c4b9725dcd1af10809"
+    url += "&limit=50&apiKey=" + "34e316823d0044c4b9725dcd1af10809"
     # print(url)
     #Resposta do servidor
     response = requests.get(url)
