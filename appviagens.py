@@ -7,10 +7,6 @@ import requests
 #   outras informações que possamos vir a considerar importantes 
 #   distancia media, ordenação por distância maior ou menor, mostrar os mais perto e mais longe, (mais ideias)
 #   verificar se o que a pessoa esta certo, tipo se as coordenadas que inseriu são um numero
-#
-
-
-
 
 
 #serve para verifcar se a atração que a pessoa deseja esta contida na lista de categorias que foi dada pelos professores
@@ -109,7 +105,7 @@ def main():
             continue
 
     if len(categorias) == 0:
-        print("\nERRO")
+        print("\nERROR")
         return
 
     for categoria in categorias:
