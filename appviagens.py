@@ -1,6 +1,6 @@
 #Grupo: P12G01
 import requests
-
+            from prettytable import PrettyTable
 
 #   To do:
 #   fazer a lista das categorias mais bonita e fazer uma tabela para o output
@@ -10,7 +10,7 @@ import requests
 #   ESTA A DAR ERRO NO COUNTRY
 
 
-#serve para verifcar se a atração que a pessoa deseja esta contida na lista de categorias que foi dada pelos professores
+# Escreve todas as atrações disponíveis e tira o "\n" que vinha agarrado a todas para facilitar chamá-las
 def obterAtrações():
     atraçõesExistentes = []
     with open("categories.txt", "r") as atrações:
@@ -18,6 +18,7 @@ def obterAtrações():
             atraçõesExistentes.append(linhas)
         atraçõesExistentes = [elemento.replace("\n", "") for elemento in atraçõesExistentes]
     return atraçõesExistentes
+
 #função que devolve apenas as categorias principais
 def mainCategories():
     mainCategories = []
@@ -26,50 +27,77 @@ def mainCategories():
             mainCategories.append(x)
     return mainCategories
 
-# função que devolve apenas as categorias secundárias de uma categoria principal
-# def subCategories(cat):
-#     subCategories = []
-#     for x in obterAtrações():
-#         if cat in x:
-#             subCategories.append(x)
-#     return subCategories
-
+# Print de uma lista com setas atrás
 def printList(lista):
-    for x in lista:
-        print("\t"+u"\u2192"+" "+x)
+    for value in lista:
+        print("\t"+u"\u2192 " + " " + value)
 
     # print(f"{len(lista): >50}")
     # print("".format())
 
+# Função que dá print do resultado obtido pelo Geoapify e o transforma numa tabela de dados
 def print_cleanWebResponse(webResponse):
     
+    tabela = PrettyTable(["Nome", "País", "Distrito", "Cidade", "Rua", "Código Postal", "Coordenadas", "Distância"])
+
     locations_found = 0
+
+    distânciaTotal = 0
+
     clean_webResponse = webResponse["features"]
+
     print("\nAqui estão as atrações encontradas: \n")
 
     for feature in clean_webResponse:
         properties = feature["properties"]
-        if "name" in properties and "country" in properties:
+        # Se não houver nome, não contará para o output
+        if "name" in properties:
             name = properties["name"]
-            country = properties["country"]
-            district = properties["county"]
-            city = properties["city"]
-            street = properties["street"]
-            postcode = properties["postcode"]
-            lat = properties["lat"]
-            lon = properties["lon"]
+
+            # Para cada um dos valores, no caso de não estarem dados nenhuns disponíveis, apenas apresentar "sem dados" para não dar erro.
+
+            if  "country" in properties:
+                country = properties["country"]
+            else: country = "Sem dados"
             
-            distance = "0"
+            if  "district" in properties:
+                district = properties["district"]
+            else: district = "Sem dados"
+            
+            if  "city" in properties:
+                city = properties["city"]
+            else: city = "Sem dados"
+            
+            if  "street" in properties:
+                street = properties["street"]
+            else: street = "Sem dados"
+            
+            if  "postcode" in properties:
+                postcode = properties["postcode"]
+            else: postcode = "Sem dados"
+            
+            # Não é necessário tornar a latitude e longitude error-proof, pois existem sempre dados.
+            coordinates = properties["coordinates"]
+            
+            # No caso da distância, se não houverem dados é porque o local se encontra nas coordenadas introduzidas e a distância será 0
             if "distance" in properties:
                 distance = properties["distance"]
+                distânciaTotal += float(distance)
+            else:
+                distance = "0"
             
-            print (name,"|",country,"|",district,"|",city,"|",street,"|",postcode,"|", lat,",",lon ,"|", distance,("m"))
 
+            tabela.add_row([name, country, district, city, street, postcode, coordinates, distance])
+            
             locations_found += 1
 
-    print ("\nForam encontradas", locations_found, "atrações.")
+    # tabela dos outputs
+    print(tabela)
 
-    # print(clean_webResponse)
+    # Outras informações adicionais
+    print("\nForam encontradas", locations_found, "atrações.")
+    print("A distância média às atrações próximas é de:", round(distânciaTotal / locations_found, 2))
+
     
 
 
