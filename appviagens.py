@@ -1,10 +1,14 @@
 #Grupo: P12G01
 import requests
-            from prettytable import PrettyTable
+from prettytable import PrettyTable
 
-#   To do:
-#   fazer a lista das categorias mais bonita e fazer uma tabela para o output
-#   outras informações que possamos vir a considerar importantes 
+# LER PRIMEIRO:
+#   Para o programa funcionar corretamente, é necessário ser instalado o addon "pretty table" que pode ser feito com: 
+#       python -m pip install -U prettytable
+# 
+#   Para uma melhor visibilidade da tabela, colocar o terminal em Fullscreen
+
+ 
 #   distancia media, ordenação por distância maior ou menor, mostrar os mais perto e mais longe, (mais ideias)
 #   verificar se o que a pessoa esta certo, tipo se as coordenadas que inseriu são um numero
 #   ESTA A DAR ERRO NO COUNTRY
@@ -37,8 +41,8 @@ def printList(lista):
 
 # Função que dá print do resultado obtido pelo Geoapify e o transforma numa tabela de dados
 def print_cleanWebResponse(webResponse):
-    
-    tabela = PrettyTable(["Nome", "País", "Distrito", "Cidade", "Rua", "Código Postal", "Coordenadas", "Distância"])
+
+    tabela = PrettyTable(["Nome", "País", "Distrito", "Localidade", "Rua", "Código Postal", "Coordenadas", "Distância"])
 
     locations_found = 0
 
@@ -61,7 +65,7 @@ def print_cleanWebResponse(webResponse):
             else: country = "Sem dados"
             
             if  "district" in properties:
-                district = properties["district"]
+                district = properties["county"]
             else: district = "Sem dados"
             
             if  "city" in properties:
@@ -77,7 +81,9 @@ def print_cleanWebResponse(webResponse):
             else: postcode = "Sem dados"
             
             # Não é necessário tornar a latitude e longitude error-proof, pois existem sempre dados.
-            coordinates = properties["coordinates"]
+            lat = properties["lat"]
+            lon = properties["lon"]
+            latlon = (lat, lon)
             
             # No caso da distância, se não houverem dados é porque o local se encontra nas coordenadas introduzidas e a distância será 0
             if "distance" in properties:
@@ -87,7 +93,7 @@ def print_cleanWebResponse(webResponse):
                 distance = "0"
             
 
-            tabela.add_row([name, country, district, city, street, postcode, coordinates, distance])
+            tabela.add_row([name, country, district, city, street, postcode, latlon, distance])
             
             locations_found += 1
 
@@ -96,47 +102,51 @@ def print_cleanWebResponse(webResponse):
 
     # Outras informações adicionais
     print("\nForam encontradas", locations_found, "atrações.")
-    print("A distância média às atrações próximas é de:", round(distânciaTotal / locations_found, 2))
+    
+    # Se não houverem atrações, não fazer a distância média
+    if locations_found > 0:
+        distânciaTotal = round(distânciaTotal / locations_found, 2)
+        print("A distância média às atrações próximas é de:", distânciaTotal)    
+    
+    # Para testes
+    # print(webResponse)
 
     
 
 
 def main():
+
     
-    latitude = float(input("Localização (latitude): ")) #40.6379691
-    longitude = float(input("Localização (longitude): ")) #-8.6509341
-    raio = float(input("Distância que pode viajar (km): ")) * 1000 #0.2
+    latitude = float(input("Localização (latitude): "))
+    
+    longitude = float(input("Localização (longitude): "))
+    
+    raio = float(input("Distância que pode viajar (km): ")) * 1000
     
     # Forum aveiro (testes)
     # latitude = 40.64119
     # longitude = -8.65141
     # raio = 10000
-
-    #Coordenadas do stor
-    # latitude = 40.5
-    # longitude = -8.5
-    # raio = 5005 * 1000
     
     print("Categorias de atrações disponíveis:")
     printList(mainCategories())
     categorias = []
     listaCategorias	= ""
+    categoriasEscolhidas = 0
     print("\nEscolha as categorias das atrações que deseja visitar. Introduza uma de cada vez e quando terminar colocar \"end\":")
     while True:
         cat = str(input("\t> " ))
-        if cat.lower() == "end":
+        # Se
+        if cat.lower() == "end" and categoriasEscolhidas >= 1:
             break
         elif cat.lower() not in mainCategories():
             print("\t\t!! Escolha categorias válidas !!")
             continue
         else:
             categorias.append(cat)
+            categoriasEscolhidas += 1
             continue
-
-    if len(categorias) == 0:
-        print("\nERROR")
-        return
-
+    
     for categoria in categorias:
         if categorias.index(categoria) == 0: listaCategorias += categoria
         else: listaCategorias += "," + categoria
