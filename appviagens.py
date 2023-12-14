@@ -111,8 +111,6 @@ def print_cleanWebResponse(webResponse):
     # Para testes
     # print(webResponse)
 
-    
-
 
 def main():
 
@@ -169,5 +167,6 @@ def main():
     #     api_key = file.read()
     # api_key = api_key.strip()
 
-if "_main_" == "_main_":
+
+if __name__ == "__main__":
     main()
