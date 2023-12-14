@@ -74,9 +74,9 @@ def print_cleanWebResponse(webResponse):
 
 def main():
     
-    # latitude = float(input("Localização (latitude): "))
-    # longitude = float(input("Localização (longitude): "))
-    # raio = float(input("Distância que pode viajar (km): ")) * 1000
+    latitude = float(input("Localização (latitude): ")) #40.6379691
+    longitude = float(input("Localização (longitude): ")) #-8.6509341
+    raio = float(input("Distância que pode viajar (km): ")) * 1000 #0.2
     
     # Forum aveiro (testes)
     # latitude = 40.64119
@@ -84,9 +84,9 @@ def main():
     # raio = 1.0
 
     #Coordenadas do stor
-    latitude = 40.5
-    longitude = -8.5
-    raio = 5 * 1000
+    # latitude = 40.5
+    # longitude = -8.5
+    # raio = 5005 * 1000
     
     print("Categorias de atrações disponíveis:")
     printList(mainCategories())
@@ -119,7 +119,7 @@ def main():
     url = "https://api.geoapify.com/v2/places?"
     url += "categories=" + listaCategorias + "&filter=circle:" + str(longitude) + "," + str(latitude) + "," + str(raio) + "&bias=proximity:" + str(longitude) + "," + str(latitude) 
     url += "&limit=50&apiKey=" + "34e316823d0044c4b9725dcd1af10809"
-    # print(url)
+    print(url)
     #Resposta do servidor
     response = requests.get(url)
     webResponse = response.json()
