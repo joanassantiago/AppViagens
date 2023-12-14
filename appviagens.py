@@ -7,6 +7,7 @@ import requests
 #   outras informações que possamos vir a considerar importantes 
 #   distancia media, ordenação por distância maior ou menor, mostrar os mais perto e mais longe, (mais ideias)
 #   verificar se o que a pessoa esta certo, tipo se as coordenadas que inseriu são um numero
+#   ESTA A DAR ERRO NO COUNTRY
 
 
 #serve para verifcar se a atração que a pessoa deseja esta contida na lista de categorias que foi dada pelos professores
@@ -44,7 +45,7 @@ def print_cleanWebResponse(webResponse):
     
     locations_found = 0
     clean_webResponse = webResponse["features"]
-    print("Aqui estão as atrações encontradas: \n")
+    print("\nAqui estão as atrações encontradas: \n")
 
     for feature in clean_webResponse:
         properties = feature["properties"]
@@ -81,7 +82,7 @@ def main():
     # Forum aveiro (testes)
     # latitude = 40.64119
     # longitude = -8.65141
-    # raio = 1.0
+    # raio = 10000
 
     #Coordenadas do stor
     # latitude = 40.5
@@ -119,10 +120,12 @@ def main():
     url = "https://api.geoapify.com/v2/places?"
     url += "categories=" + listaCategorias + "&filter=circle:" + str(longitude) + "," + str(latitude) + "," + str(raio) + "&bias=proximity:" + str(longitude) + "," + str(latitude) 
     url += "&limit=50&apiKey=" + "34e316823d0044c4b9725dcd1af10809"
-    print(url)
+    #print(url)
+
     #Resposta do servidor
     response = requests.get(url)
     webResponse = response.json()
+    #print (webResponse)
     print_cleanWebResponse(webResponse)
     # with open("API_key.txt") as file:
     #     api_key = file.read()
