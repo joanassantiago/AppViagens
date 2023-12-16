@@ -8,11 +8,6 @@ from prettytable import PrettyTable
 # 
 #   Para uma melhor visibilidade da tabela, colocar o terminal em Fullscreen
 
- 
-#   distancia media, ordenação por distância maior ou menor, mostrar os mais perto e mais longe, (mais ideias)
-#   verificar se o que a pessoa esta certo, tipo se as coordenadas que inseriu são um numero
-#   ESTA A DAR ERRO NO COUNTRY
-
 
 # Escreve todas as atrações disponíveis e tira o "\n" que vinha agarrado a todas para facilitar chamá-las
 def obterAtrações():
@@ -23,7 +18,7 @@ def obterAtrações():
         atraçõesExistentes = [elemento.replace("\n", "") for elemento in atraçõesExistentes]
     return atraçõesExistentes
 
-#função que devolve apenas as categorias principais
+# Função que devolve apenas as categorias principais
 def mainCategories():
     mainCategories = []
     for x in obterAtrações():
@@ -36,13 +31,11 @@ def printList(lista):
     for value in lista:
         print("\t"+u"\u2192 " + " " + value)
 
-    # print(f"{len(lista): >50}")
-    # print("".format())
 
 # Função que dá print do resultado obtido pelo Geoapify e o transforma numa tabela de dados
 def print_cleanWebResponse(webResponse):
 
-    tabela = PrettyTable(["Nome", "País", "Distrito", "Localidade", "Rua", "Código Postal", "Coordenadas", "Distância"])
+    tabela = PrettyTable(["Nome", "País", "Distrito", "Localidade", "Rua", "Código Postal", "Coordenadas", "Distância (m)"])
 
     locations_found = 0
 
@@ -94,10 +87,10 @@ def print_cleanWebResponse(webResponse):
             
 
             tabela.add_row([name, country, district, city, street, postcode, latlon, distance])
-            
+
             locations_found += 1
 
-    # tabela dos outputs
+    # Tabela dos outputs
     print(tabela)
 
     # Outras informações adicionais
@@ -106,7 +99,7 @@ def print_cleanWebResponse(webResponse):
     # Se não houverem atrações, não fazer a distância média
     if locations_found > 0:
         distânciaTotal = round(distânciaTotal / locations_found, 2)
-        print("A distância média às atrações próximas é de:", distânciaTotal)    
+        print("A distância média às atrações próximas é de:", distânciaTotal, "m")    
     
     # Para testes
     # print(webResponse)
@@ -117,6 +110,7 @@ def main():
     
     while True:
         latitude = input("Localização (latitude): ")
+        # Serve para verificar se introduziu um número
         if latitude.isalpha():
             print("Introduza um número!")
         elif float(latitude) <= 90 and float(latitude) >= -90:
@@ -147,7 +141,7 @@ def main():
     # longitude = -8.65141
     # raio = 10000
     
-    print("Categorias de atrações disponíveis:")
+    print("\nCategorias de atrações disponíveis:")
     printList(mainCategories())
     categorias = []
     listaCategorias	= ""
@@ -155,7 +149,7 @@ def main():
     print("\nEscolha as categorias das atrações que deseja visitar. Introduza uma de cada vez e quando terminar colocar \"end\":")
     while True:
         cat = str(input("\t> " ))
-        # Se
+        # Serve para o utilizador terminar com as categorias que vai escolher
         if cat.lower() == "end" and categoriasEscolhidas >= 1:
             break
         elif cat.lower() not in mainCategories():
@@ -165,7 +159,7 @@ def main():
             categorias.append(cat)
             categoriasEscolhidas += 1
             continue
-    
+    # Cria uma lista de categorias para se colocar na url
     for categoria in categorias:
         if categorias.index(categoria) == 0: listaCategorias += categoria
         else: listaCategorias += "," + categoria
@@ -174,19 +168,18 @@ def main():
     # print(listaCategorias)
 
     #Criação do Url para o geoapif; Até 50 atrações
+    
+    apikey = "34e316823d0044c4b9725dcd1af10809"
+
     url = "https://api.geoapify.com/v2/places?"
     url += "categories=" + listaCategorias + "&filter=circle:" + str(longitude) + "," + str(latitude) + "," + str(raio) + "&bias=proximity:" + str(longitude) + "," + str(latitude) 
-    url += "&limit=50&apiKey=" + "34e316823d0044c4b9725dcd1af10809"
-    #print(url)
+    url += "&limit=50&apiKey=" + apikey
 
     #Resposta do servidor
     response = requests.get(url)
     webResponse = response.json()
     #print (webResponsle)
     print_cleanWebResponse(webResponse)
-    # with open("API_key.txt") as file:
-    #     api_key = file.read()
-    # api_key = api_key.strip()
 
 
 if __name__ == "__main__":
