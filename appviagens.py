@@ -50,7 +50,7 @@ def print_cleanWebResponse(webResponse):
 
     clean_webResponse = webResponse["features"]
 
-    print("\nAqui estão as atrações encontradas: \n")
+    print("\nAqui estão as atrações mais próximas encontradas: \n")
 
     for feature in clean_webResponse:
         properties = feature["properties"]
@@ -115,12 +115,33 @@ def print_cleanWebResponse(webResponse):
 def main():
 
     
-    latitude = float(input("Localização (latitude): "))
+    while True:
+        latitude = input("Localização (latitude): ")
+        if latitude.isalpha():
+            print("Introduza um número!")
+        elif float(latitude) <= 90 and float(latitude) >= -90:
+            latitude = float(latitude)
+            break
+        else:
+            print("Introduza um valor válido (de -90 a 90)")
+
+    while True:
+        longitude = input("Localização (longitude): ")
+        if longitude.isalpha():
+            print("Introduza um número!")
+        elif float(longitude) <= 180 and float(longitude) >= -180:
+            longitude = float(longitude)
+            break
+        else:
+            print("Introduza um valor válido (de -180 a 180)")
     
-    longitude = float(input("Localização (longitude): "))
-    
-    raio = float(input("Distância que pode viajar (km): ")) * 1000
-    
+    while True:
+        raio = float(input("Distância que pode viajar (km): ")) * 1000
+        if raio < 0:
+            print("Introduza uma distância válida!")
+        else:
+            break
+        
     # Forum aveiro (testes)
     # latitude = 40.64119
     # longitude = -8.65141
@@ -152,7 +173,7 @@ def main():
     # Para testes
     # print(listaCategorias)
 
-    #Criação do Url para o geoapify
+    #Criação do Url para o geoapif; Até 50 atrações
     url = "https://api.geoapify.com/v2/places?"
     url += "categories=" + listaCategorias + "&filter=circle:" + str(longitude) + "," + str(latitude) + "," + str(raio) + "&bias=proximity:" + str(longitude) + "," + str(latitude) 
     url += "&limit=50&apiKey=" + "34e316823d0044c4b9725dcd1af10809"
@@ -161,7 +182,7 @@ def main():
     #Resposta do servidor
     response = requests.get(url)
     webResponse = response.json()
-    #print (webResponse)
+    #print (webResponsle)
     print_cleanWebResponse(webResponse)
     # with open("API_key.txt") as file:
     #     api_key = file.read()
